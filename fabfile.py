@@ -102,7 +102,3 @@ def clean(c):
 @task
 def journalctl(c):
     c.run('journalctl -u minecraft.service -f')
-
-@task
-def daily_backup(c):
-    if os.path.exists('')
