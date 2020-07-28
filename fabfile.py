@@ -73,6 +73,7 @@ def update_config(c):
 
 
 def upload_mods(c):
+    c.run(f'mkdir -p {SERVER_DIR}/mods/')
     for mod in os.listdir('mods'):
         c.put(f'mods/{mod}', f'{SERVER_DIR}/mods/{mod}')
 
