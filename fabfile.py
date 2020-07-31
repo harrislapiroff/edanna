@@ -8,7 +8,9 @@ SERVER_DIR = '/var/minecraft/server'
 
 # A mapping of configuration files to upload from our local `data` dir to the server
 UPLOAD_FILES = [
-    ('data/server.properties', f'{SERVER_DIR}/server.properties'),
+    # server.properties has to be private because it includes the RCON password
+    ('privatedata/server.properties', f'{SERVER_DIR}/server.properties'),
+    # The rest are OK public for now
     ('data/banned-ips.json', f'{SERVER_DIR}/banned-ips.json'),
     ('data/banned-players.json', f'{SERVER_DIR}/banned-players.json'),
     ('data/ops.json', f'{SERVER_DIR}/ops.json'),
@@ -30,6 +32,7 @@ def install(c):
     c.run('echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list')
     c.run('apt-get --yes update')
     c.run('apt-get --yes install -t jessie-backports  openjdk-8-jre-headless')
+    c.run('apt-get --yes install screen')
     c.run(f'mkdir -p {SERVER_DIR}')
     with c.cd(SERVER_DIR):
         c.run('echo "eula=true" > eula.txt')
@@ -56,8 +59,10 @@ def install(c):
     # Create a systemd unit to start Forge
     c.run('systemctl daemon-reload')
     c.run('systemctl start minecraft.service')
+    c.run('systemctl enable minecraft.service')
 
 
+@task
 def upload_config(c):
     "Upload configuration files from local"
     for local, remote in UPLOAD_FILES:
@@ -70,6 +75,7 @@ def update_config(c):
     upload_config(c)
     c.run('systemctl daemon-reload')
     c.run('systemctl restart minecraft.service')
+    c.run('systemctl enable minecraft.service')
 
 
 def upload_mods(c):
@@ -84,6 +90,7 @@ def update_mods(c):
     upload_mods(c)
     c.run('systemctl daemon-reload')
     c.run('systemctl restart minecraft.service')
+    c.run('systemctl enable minecraft.service')
 
 
 @task
@@ -101,5 +108,27 @@ def clean(c):
 
 
 @task
+def start(c):
+    c.run('systemctl start minecraft.service')
+    c.run('systemctl enable minecraft.service')
+
+
+@task
+def restart(c):
+    c.run('systemctl restart minecraft.service')
+    c.run('systemctl enable minecraft.service')
+
+
+@task
+def stop(c):
+    c.run('systemctl stop minecraft.service')
+
+
+@task
 def journalctl(c):
     c.run('journalctl -u minecraft.service -f')
+
+
+@task
+def screen(c):
+    c.sudo('screen -r', pty=True, user='minecraft')
