@@ -10,11 +10,6 @@ SERVER_DIR = '/var/minecraft/server'
 UPLOAD_FILES = [
     # server.properties has to be private because it includes the RCON password
     ('privatedata/server.properties', f'{SERVER_DIR}/server.properties'),
-    # The rest are OK public for now
-    ('data/banned-ips.json', f'{SERVER_DIR}/banned-ips.json'),
-    ('data/banned-players.json', f'{SERVER_DIR}/banned-players.json'),
-    ('data/ops.json', f'{SERVER_DIR}/ops.json'),
-    ('data/whitelist.json', f'{SERVER_DIR}/whitelist.json'),
     # systemd service
     ('data/minecraft.service', '/etc/systemd/system/minecraft.service'),
 ]
