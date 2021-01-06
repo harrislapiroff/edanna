@@ -8,7 +8,7 @@ Restart=always
 WorkingDirectory=/var/minecraft/server/
 KillMode=none
 
-ExecStart=/usr/bin/screen -DmS mc java -Xms24576m -Xmx24576m -jar forge-1.12.2-14.23.5.2854.jar nogui
+ExecStart=/usr/bin/screen -DmS mc java -Xms16g -Xmx20g -jar forge-1.12.2-14.23.5.2854.jar --nogui
 
 ExecStop=/usr/bin/screen -p 0 -S mc -X eval 'stuff "say SERVER SHUTTING DOWN IN 15 SECONDS..."\015'
 ExecStop=/bin/sleep 5

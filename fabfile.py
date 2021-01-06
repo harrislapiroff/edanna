@@ -5,18 +5,24 @@ from invocations.console import confirm
 
 
 SERVER_DIR = '/var/minecraft/server'
+SERVER_BETA_DIR = '/var/minecraft/server-beta'
 
 # A mapping of configuration files to upload from our local `data` dir to the server
 UPLOAD_FILES = [
     # server.properties has to be private because it includes the RCON password
     ('privatedata/server.properties', f'{SERVER_DIR}/server.properties'),
+    ('privatedata/server-beta.properties', f'{SERVER_BETA_DIR}/server.properties'),
     # systemd service
     ('data/minecraft.service', '/etc/systemd/system/minecraft.service'),
+    ('data/minecraft-beta.service', '/etc/systemd/system/minecraft-beta.service'),
 ]
 
 # If you update the forge URL, don't forget to update minecraft.service
 FORGE_URL = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/1.12.2-14.23.5.2854/forge-1.12.2-14.23.5.2854-installer.jar'
 FORGE_INSTALLER = FORGE_URL.split('/')[-1]
+
+
+# TODO: Add install/upload mods for beta dir OR just scrap the automated provisioning
 
 
 @task
@@ -126,4 +132,9 @@ def journalctl(c):
 
 @task
 def screen(c):
-    c.sudo('screen -r', pty=True, user='minecraft')
+    c.sudo('screen -dr mc', pty=True, user='minecraft')
+
+
+@task
+def screenbeta(c):
+    c.sudo('screen -dr mcbeta', pty=True, user='minecraft')
